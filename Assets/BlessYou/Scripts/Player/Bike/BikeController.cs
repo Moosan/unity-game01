@@ -11,6 +11,9 @@ namespace Bike
         [SerializeField]
         private float MovePower;
 
+        [SerializeField]
+        private float RotateThrethold;
+
 
         private Vector3 Force
         {
@@ -26,6 +29,7 @@ namespace Bike
                 return _Force;
             }
         }
+
 
         #region Force
 
@@ -115,6 +119,22 @@ namespace Bike
             {
                 UpdateVelocity();
                 ForceChanged = false;
+            }
+
+            var zvalue = transform.eulerAngles.z;
+            if (zvalue > 180) zvalue -= 360;
+            if (Mathf.Abs(zvalue) >RotateThrethold)
+            {
+                if(zvalue >= 0)
+                {
+                    zvalue = RotateThrethold;
+                }
+                else
+                {
+                    zvalue = -RotateThrethold + 360;
+                }
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y ,zvalue);
+                
             }
         }
 
