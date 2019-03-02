@@ -57,15 +57,15 @@ namespace Bike
         #endregion
 
 
-        #region BikeAction
+        #region BikeExtension
         //BikeControllerは拡張機能を受けとることと保存しておくことしか知らない
-        private IBikeActionable BikeActionable;
+        private IBikeExtension BikeExtension;
 
-        public void AttachBikeAction(IBikeActionable action)
+        public void AttachBikeExtension(IBikeExtension extension)
         {
-            BikeActionable?.DetachAction(this);
-            BikeActionable = action;
-            BikeActionable?.AttachAction(this);
+            BikeExtension?.DetachExtension(this);
+            BikeExtension = extension;
+            BikeExtension?.AttachExtension(this);
         }
 
         #endregion
@@ -127,7 +127,7 @@ namespace Bike
         #endregion
 
 
-        #region Unity
+        #region UnityCallback
 
         void Start()
         {
