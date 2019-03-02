@@ -17,8 +17,7 @@ namespace Bike
         [SerializeField]
         private float yRotateSpeed;
 
-        
-
+        #region Direction
         private EnumDirection Direction
         {
             //代入されたらBoolをTrueにする
@@ -34,12 +33,14 @@ namespace Bike
             }
         }
 
-
-        #region Force
-
         private bool DirectionChanged;
 
         private EnumDirection _Direction;
+
+        private enum EnumDirection
+        {
+            forward = -90, back = 90, right = 0, left = 180
+        }
 
         #endregion
 
@@ -89,19 +90,18 @@ namespace Bike
             transform.eulerAngles = new Vector3(ea.x, yangle, ea.z);
         }
 
-        private float ChangeAngle(float angle)
+        private void DoRotateRestriction()
         {
-            if(angle > 180)
-            {
-                return ChangeAngle(angle - 360);
-            }
-            else if(angle < -180)
-            {
-                return ChangeAngle(angle + 360);
-            }
-            return angle;
+            var angle = transform.eulerAngles;
+            var zvalue = ChangeAngle(angle.z);
+            zvalue = Mathf.Clamp(zvalue, -zRotateThrethold, zRotateThrethold);
+            transform.eulerAngles = new Vector3(angle.x, angle.y, zvalue);
         }
 
+        #endregion
+
+
+        #region PhysicsCallback
         private void OnCollisionEnter(Collision collision)
         {
             OnCollisionEnterEvent(collision);
@@ -110,18 +110,6 @@ namespace Bike
         private void OnTriggerStay(Collider other)
         {
             OnTriggerEvent(other);
-        }
-
-        private bool CheckSpeedRetriction() {
-            return Rigidbody.velocity.magnitude > MaxSpeed;
-        }
-
-        private void DoRotateRestriction()
-        {
-            var angle = transform.eulerAngles;
-            var zvalue = ChangeAngle(angle.z);
-            zvalue = Mathf.Clamp(zvalue, -zRotateThrethold, zRotateThrethold);
-            transform.eulerAngles = new Vector3(angle.x, angle.y, zvalue);
         }
 
         #endregion
@@ -214,11 +202,23 @@ namespace Bike
             Debug.Log("Destruction!");
         }
 
-        private enum EnumDirection
+        private float ChangeAngle(float angle)
         {
-            forward = -90, back = 90, right = 0, left = 180
+            if (angle > 180)
+            {
+                return ChangeAngle(angle - 360);
+            }
+            else if (angle < -180)
+            {
+                return ChangeAngle(angle + 360);
+            }
+            return angle;
         }
-        
+        private bool CheckSpeedRetriction()
+        {
+            return Rigidbody.velocity.magnitude > MaxSpeed;
+        }
+
     }
     
 }
