@@ -12,30 +12,34 @@ namespace Bike
         private float MovePower;
 
         [SerializeField]
-        private float RotateThrethold;
+        private float zRotateThrethold;
 
+        [SerializeField]
+        private float yRotateSpeed;
 
-        private Vector3 Force
+        
+
+        private EnumDirection Direction
         {
             //代入されたらBoolをTrueにする
             set
             {
-                if (ForceChanged) return;
-                ForceChanged = true;
-                _Force = value;
+                if (DirectionChanged) return;
+                DirectionChanged = true;
+                _Direction = value;
             }
             get
             {
-                return _Force;
+                return _Direction;
             }
         }
 
 
         #region Force
 
-        private bool ForceChanged;
+        private bool DirectionChanged;
 
-        private Vector3 _Force;
+        private EnumDirection _Direction;
 
         #endregion
 
@@ -71,10 +75,31 @@ namespace Bike
         /// <summary>
         /// 最大速度を超えてない時だけ力を加える
         /// </summary>
-        private void UpdateVelocity()
+        private void OnMove()
         {
-            if (Mathf.Abs(Rigidbody.velocity.x) > MaxSpeed) return;
-            Rigidbody.AddForce(Force, ForceMode.Acceleration);
+            OnRotate();
+            if (CheckSpeedRetriction()) return;
+            Rigidbody.AddForce(transform.right * MovePower, ForceMode.Acceleration);
+        }
+
+        private void OnRotate()
+        {
+            var yangle = (int)Direction;
+            var ea = transform.eulerAngles;
+            transform.eulerAngles = new Vector3(ea.x, yangle, ea.z);
+        }
+
+        private float ChangeAngle(float angle)
+        {
+            if(angle > 180)
+            {
+                return ChangeAngle(angle - 360);
+            }
+            else if(angle < -180)
+            {
+                return ChangeAngle(angle + 360);
+            }
+            return angle;
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -86,6 +111,19 @@ namespace Bike
         {
             OnTriggerEvent(other);
         }
+
+        private bool CheckSpeedRetriction() {
+            return Rigidbody.velocity.magnitude > MaxSpeed;
+        }
+
+        private void DoRotateRestriction()
+        {
+            var angle = transform.eulerAngles;
+            var zvalue = ChangeAngle(angle.z);
+            zvalue = Mathf.Clamp(zvalue, -zRotateThrethold, zRotateThrethold);
+            transform.eulerAngles = new Vector3(angle.x, angle.y, zvalue);
+        }
+
         #endregion
 
 
@@ -94,8 +132,7 @@ namespace Bike
         void Start()
         {
             Rigidbody = this.GetComponent<Rigidbody>();
-            Force = new Vector3();
-            ForceChanged = false;
+            DirectionChanged = false;
         }
 
 
@@ -109,44 +146,39 @@ namespace Bike
             {
                 OnKeyLeft();
             }
+            if (Input.GetKey(KeyCode.W))
+            {
+                OnKeyUp();
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                OnKeyDown();
+            }
+            DoRotateRestriction();
         }
 
 
         private void FixedUpdate()
         {
             //_Forceの値が変わってた時のみ実行
-            if (ForceChanged)
+            if (DirectionChanged)
             {
-                UpdateVelocity();
-                ForceChanged = false;
-            }
-
-            var zvalue = transform.eulerAngles.z;
-            if (zvalue > 180) zvalue -= 360;
-            if (Mathf.Abs(zvalue) >RotateThrethold)
-            {
-                if(zvalue >= 0)
-                {
-                    zvalue = RotateThrethold;
-                }
-                else
-                {
-                    zvalue = -RotateThrethold + 360;
-                }
-                transform.eulerAngles = new Vector3(transform.eulerAngles.x,transform.eulerAngles.y ,zvalue);
-                
+                OnMove();
+                DirectionChanged = false;
             }
         }
 
         #endregion
 
 
+        #region KeyInput
+
         /// <summary>
         /// 右に進みたいときはこれ
         /// </summary>
         public void OnKeyRight()
         {
-            Force = transform.right * MovePower;
+            Direction = EnumDirection.right;
         }
 
         /// <summary>
@@ -154,8 +186,25 @@ namespace Bike
         /// </summary>
         public void OnKeyLeft()
         {
-            Force = -transform.right * MovePower;
+            Direction = EnumDirection.left;
         }
+
+        /// <summary>
+        /// 上に進めたいときはこれ
+        /// </summary>
+        public void OnKeyUp()
+        {
+            Direction = EnumDirection.forward;
+        }
+        /// <summary>
+        /// 下に進みたいときはこれ
+        /// </summary>
+        public void OnKeyDown()
+        {
+            Direction = EnumDirection.back;
+        }
+
+        #endregion
 
         /// <summary>
         /// プレイヤーが破壊されたときはこれ
@@ -164,5 +213,12 @@ namespace Bike
         {
             Debug.Log("Destruction!");
         }
+
+        private enum EnumDirection
+        {
+            forward = -90, back = 90, right = 0, left = 180
+        }
+        
     }
+    
 }
