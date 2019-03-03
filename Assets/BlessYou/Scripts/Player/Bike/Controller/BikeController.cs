@@ -39,7 +39,7 @@ namespace Bike
 
         private enum EnumDirection
         {
-            forward = 270, back = 90, right = 0, left = 180
+            forward = 270, back = 90, right = 0, left = 180, forright = 315, bacright = 45, bacleft = 135, forleft = 225
         }
 
         #endregion
@@ -89,7 +89,14 @@ namespace Bike
             var ea = transform.eulerAngles;
             var nowAngle = ea.y;
             if (Mathf.Abs(targetAngle - nowAngle) < 0.1f) return;
-            nowAngle += Time.deltaTime * yRotateSpeed;
+            if(ChangeAngle( targetAngle - nowAngle) >= 0)
+            {
+                nowAngle += Time.deltaTime * yRotateSpeed;
+            }
+            else
+            {
+                nowAngle -= Time.deltaTime * yRotateSpeed;
+            }
             transform.eulerAngles = new Vector3(ea.x, nowAngle, ea.z);
         }
 
