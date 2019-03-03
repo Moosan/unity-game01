@@ -39,7 +39,7 @@ namespace Bike
 
         private enum EnumDirection
         {
-            forward = -90, back = 90, right = 0, left = 180
+            forward = 270, back = 90, right = 0, left = 180
         }
 
         #endregion
@@ -85,9 +85,12 @@ namespace Bike
 
         private void OnRotate()
         {
-            var yangle = (int)Direction;
+            var targetAngle = (int)Direction;
             var ea = transform.eulerAngles;
-            transform.eulerAngles = new Vector3(ea.x, yangle, ea.z);
+            var nowAngle = ea.y;
+            if (Mathf.Abs(targetAngle - nowAngle) < 0.1f) return;
+            nowAngle += Time.deltaTime * yRotateSpeed;
+            transform.eulerAngles = new Vector3(ea.x, nowAngle, ea.z);
         }
 
         private void DoRotateRestriction()
