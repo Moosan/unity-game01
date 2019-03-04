@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxSpeed: 8
-  MovePower: 40
+  MovePower: 50
   zRotateThrethold: 15
   yRotateSpeed: 500
 --- !u!54 &119434344

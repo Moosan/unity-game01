@@ -5,6 +5,9 @@ namespace Bike
     {
         private Rigidbody Rigidbody;
 
+
+        #region SerializedFields
+
         [SerializeField]
         private float MaxSpeed;
 
@@ -17,14 +20,17 @@ namespace Bike
         [SerializeField]
         private float yRotateSpeed;
 
+        #endregion
+
+
         #region Direction
-        private EnumDirection Direction
+        private EnumDirection TargetDirection
         {
             //代入されたらBoolをTrueにする
             set
             {
-                if (DirectionChanged) return;
-                DirectionChanged = true;
+                if (_DirectionChanged) return;
+                _DirectionChanged = true;
                 _Direction = value;
             }
             get
@@ -33,13 +39,22 @@ namespace Bike
             }
         }
 
-        private bool DirectionChanged;
+        private bool _DirectionChanged;
 
         private EnumDirection _Direction;
 
         private enum EnumDirection
         {
             forward = 270, back = 90, right = 0, left = 180, forright = 315, bacright = 45, bacleft = 135, forleft = 225
+        }
+
+        private void DirectionReset()
+        {
+            _DirectionChanged = false;
+        }
+        private bool IsDirectionChanged()
+        {
+            return _DirectionChanged;
         }
 
         #endregion
@@ -78,34 +93,36 @@ namespace Bike
         /// </summary>
         private void OnMove()
         {
-            OnRotate();
+            if (!IsDirectionChanged()) return;
             if (CheckSpeedRetriction()) return;
             Rigidbody.AddForce(transform.right * MovePower, ForceMode.Acceleration);
+            DirectionReset();
         }
 
+        //ここめっちゃ読みにくい
         private void OnRotate()
         {
-            var targetAngle = (int)Direction;
-            var ea = transform.eulerAngles;
-            var nowAngle = ea.y;
-            if (Mathf.Abs(targetAngle - nowAngle) < 0.1f) return;
-            if(ChangeAngle( targetAngle - nowAngle) >= 0)
-            {
-                nowAngle += Time.deltaTime * yRotateSpeed;
-            }
-            else
-            {
-                nowAngle -= Time.deltaTime * yRotateSpeed;
-            }
-            transform.eulerAngles = new Vector3(ea.x, nowAngle, ea.z);
+            if (!IsDirectionChanged()) return;
+            var nowAngle = transform.eulerAngles.y;
+            var deltaAngle = (int)TargetDirection - nowAngle;
+            if (Mathf.Abs(deltaAngle) < 0.1f) return;
+            nowAngle = nowAngle + Mathf.Sign(ChangeAngle(deltaAngle)) * Time.deltaTime * yRotateSpeed;
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, nowAngle, transform.eulerAngles.z);
+            DirectionReset();
         }
 
+        //オイラー角のZ成分が閾値(Threshold)を超えないようにクランプしてる
         private void DoRotateRestriction()
         {
-            var angle = transform.eulerAngles;
-            var zvalue = ChangeAngle(angle.z);
-            zvalue = Mathf.Clamp(zvalue, -zRotateThrethold, zRotateThrethold);
-            transform.eulerAngles = new Vector3(angle.x, angle.y, zvalue);
+            var zvalue = Mathf.Clamp(ChangeAngle(transform.eulerAngles.z), -zRotateThrethold, zRotateThrethold);
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, zvalue);
+        }
+
+
+        //最大速度超えてたらtrue
+        private bool CheckSpeedRetriction()
+        {
+            return Rigidbody.velocity.magnitude > MaxSpeed;
         }
 
         #endregion
@@ -130,7 +147,7 @@ namespace Bike
         void Start()
         {
             Rigidbody = this.GetComponent<Rigidbody>();
-            DirectionChanged = false;
+            _DirectionChanged = false;
         }
 
 
@@ -158,12 +175,8 @@ namespace Bike
 
         private void FixedUpdate()
         {
-            //_Forceの値が変わってた時のみ実行
-            if (DirectionChanged)
-            {
-                OnMove();
-                DirectionChanged = false;
-            }
+            OnRotate();
+            OnMove();
         }
 
         #endregion
@@ -176,7 +189,7 @@ namespace Bike
         /// </summary>
         public void OnKeyRight()
         {
-            Direction = EnumDirection.right;
+            TargetDirection = EnumDirection.right;
         }
 
         /// <summary>
@@ -184,7 +197,7 @@ namespace Bike
         /// </summary>
         public void OnKeyLeft()
         {
-            Direction = EnumDirection.left;
+            TargetDirection = EnumDirection.left;
         }
 
         /// <summary>
@@ -192,14 +205,14 @@ namespace Bike
         /// </summary>
         public void OnKeyUp()
         {
-            Direction = EnumDirection.forward;
+            TargetDirection = EnumDirection.forward;
         }
         /// <summary>
         /// 下に進みたいときはこれ
         /// </summary>
         public void OnKeyDown()
         {
-            Direction = EnumDirection.back;
+            TargetDirection = EnumDirection.back;
         }
 
         #endregion
@@ -212,6 +225,7 @@ namespace Bike
             Debug.Log("Destruction!");
         }
 
+        //角度を-180から180の間の値にあわせる
         private float ChangeAngle(float angle)
         {
             if (angle > 180)
@@ -224,11 +238,5 @@ namespace Bike
             }
             return angle;
         }
-        private bool CheckSpeedRetriction()
-        {
-            return Rigidbody.velocity.magnitude > MaxSpeed;
-        }
-
     }
-    
 }
