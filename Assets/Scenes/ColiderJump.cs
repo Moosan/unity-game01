@@ -19,13 +19,18 @@ public class ColiderJump : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       /* jumpbase += Time.deltaTime;
-        if(jumpbase >= jumpspan){
-            key = true;
-            jumpbase = 0;
-        }*/
+        /* jumpbase += Time.deltaTime;
+         if(jumpbase >= jumpspan){
+             key = true;
+             jumpbase = 0;
+         }*/
+        if (Input.GetKey(KeyCode.Space) && key)
+        {
+            rb.AddForce(new Vector3(0, up, 0), ForceMode.Impulse);
+            key = false;
+        }
     }
-    private void OnCollisionStay(Collision othor)
+    private void OnCollisionEnter(Collision othor)
     {
         Vector3 housen = Vector3.zero;
 
@@ -35,16 +40,14 @@ public class ColiderJump : MonoBehaviour
             {
                 housen = contact.normal;
                 Debug.Log(housen);
+                if (contact.normal.y > 0)
+                {
+                    key = true;
+                }
             }
-        }
-        if (housen.y > 0)
-        {
-            key = true;
-            if (Input.GetKey(KeyCode.Space))
-            {
-                rb.AddForce(new Vector3(0, up, 0), ForceMode.Impulse);
-                key = false;
-            }
+
+
+
         }
     }
 }
