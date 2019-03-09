@@ -2,13 +2,13 @@
 namespace Bike
 {
     //放射線を止める拡張機能
-    public class RadiationDefenceAction : MonoBehaviour,IBikeActionable
+    public class RadiationDefenceExtension : MonoBehaviour,IBikeExtension
     {
-        public void AttachAction(BikeController bike)
+        public void AttachExtension(BikeController bike)
         {
             bike.OnTriggerEvent += OnDefence;
         }
-        public void DetachAction(BikeController bike)
+        public void DetachExtension(BikeController bike)
         {
             bike.OnTriggerEvent -= OnDefence;
         }

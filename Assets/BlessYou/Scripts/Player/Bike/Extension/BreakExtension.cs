@@ -2,13 +2,13 @@
 namespace Bike
 {
     //壊す拡張機能
-    public class BreakAction : MonoBehaviour, IBikeActionable
+    public class BreakExtension : MonoBehaviour, IBikeExtension
     {
-        public void AttachAction(BikeController bike)
+        public void AttachExtension(BikeController bike)
         {
             bike.OnCollisionEnterEvent += OnBreak;
         }
-        public void DetachAction(BikeController bike)
+        public void DetachExtension(BikeController bike)
         {
             bike.OnCollisionEnterEvent -= OnBreak;
         }
