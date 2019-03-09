@@ -216,13 +216,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 119434338}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50918650a36a7244e82ac1ca5358c6ed, type: 3}
+  m_Script: {fileID: 11500000, guid: 603c7b74ebac2e347ad355c587b43f27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSpeed: 8
-  MovePower: 50
+  MaxSpeed: 10
+  MovePower: 80
   zRotateThrethold: 15
-  yRotateSpeed: 500
+  yRotateSpeed: 180
 --- !u!54 &119434344
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -726,7 +726,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 725787422}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bd6f6b951deebf4c85cb12d5a0ec78c, type: 3}
+  m_Script: {fileID: 11500000, guid: 9fb6b9b9947776d439c9aba5eebdbf6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!65 &725787425
@@ -1327,7 +1327,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1310687805}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bce58402d6ddf6349b58e4bcabf24b0c, type: 3}
+  m_Script: {fileID: 11500000, guid: f215a90dee2e73647a9aa5e969dea2fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   LifeTime: 1
@@ -1462,7 +1462,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1398439888}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a17e3a4e8ae54834ea6642edf4e3836d, type: 3}
+  m_Script: {fileID: 11500000, guid: 3f6261b0cdf4fab42a3ac374bb721c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bike: {fileID: 119434343}
