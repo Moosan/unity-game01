@@ -4,14 +4,5 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 1
-    path: Assets/BlessYou/Scenes/TestScene/SceneTransition/taskTransitionA.unity
-    guid: 771d97021619c6a4b818170dccd3f61c
-  - enabled: 1
-    path: Assets/BlessYou/Scenes/TestScene/SceneTransition/taskTransitionB.unity
-    guid: 4022692add4f59b43ac3166d0db2b0df
-  - enabled: 1
-    path: Assets/BlessYou/Scenes/TestScene/SceneTransition/taskTransitionLoading.unity
-    guid: dc8420f4eccc6d146983e3a88a49d65e
+  m_Scenes: []
   m_configObjects: {}

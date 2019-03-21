@@ -86,6 +86,40 @@ public class SceneTransition : MonoBehaviour
         if (loadingSceneOperation.allowSceneActivation) return loadingSceneOperation.progress >= 0.9f;
         else return loadingSceneOperation.isDone;
     }
+    
+    //追加でシーンを同時に開く
+    public void LoadAddictive(string sceneName)
+    {
+        SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+    }
+    //シーン閉じる
+    public void Unload(string sceneName)
+    {
+        SceneManager.UnloadSceneAsync(sceneName);
+    }
+    //アクティブなシーン名取得(sceneManager的なアクティブじゃなくてロードされてるシーン)
+    public string[] GetActiveSceneName()
+    {
+        int sceneCount = SceneManager.sceneCount;
+
+        List<string> activeSceneName = new List<string>();
+        for(int i = 0;i < sceneCount; i++)
+        {
+            Scene s = SceneManager.GetSceneAt(i);
+            activeSceneName.Add(s.name);
+        }
+
+        return activeSceneName.ToArray();
+    }
+    public string GetMainSceneName()
+    {
+        return SceneManager.GetActiveScene().name;
+    }
+    public void SetMainScene(string sceneName)
+    {
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+    }
+
 
     //時間ずらすだけ
     private IEnumerator DelayMethod(float delayTime, Action action)
