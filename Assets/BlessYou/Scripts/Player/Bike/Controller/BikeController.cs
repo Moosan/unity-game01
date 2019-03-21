@@ -99,15 +99,29 @@ namespace Bike
             DirectionReset();
         }
 
-        //ここめっちゃ読みにくい
+        //ここめっちゃくそい
         private void OnRotate()
         {
+            //もし入力に変化が無いならやめる
             if (!IsDirectionChanged()) return;
+
+            //現在角を取得
             var nowAngle = transform.eulerAngles.y;
+
+            //目標角と現在角の差分を取得
             var deltaAngle = (int)TargetDirection - nowAngle;
-            if (Mathf.Abs(deltaAngle) < 0.1f) return;
+
+            //差分の大きさが0.1f未満なら回転やめる
+            if (Mathf.Abs(deltaAngle) < 0.1f) return;//この部分が脆弱性、yRotateSpeedを特殊な値にすると動かなくなる
+
+            //現在角に、目標角に近づく値を足す、Mathf.Sign()のとこで、右回りか左回りか指定してる
             nowAngle = nowAngle + Mathf.Sign(ChangeAngle(deltaAngle)) * Time.deltaTime * yRotateSpeed;
+
+            //新しい現在角を直接代入
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, nowAngle, transform.eulerAngles.z);
+
+            //入力に対しての処理を行ったので入力の状態をリセットする
+            //このおかげで、回転の処理が行われたフレームでは移動の処理は行われない
             DirectionReset();
         }
 
