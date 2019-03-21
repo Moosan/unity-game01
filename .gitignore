@@ -41,9 +41,13 @@ Temporary Items
 
 # ignore meta data
 *.meta
+# ignore obj data
+*.obj
 
 # Never ignore Asset meta data
 ![Aa]ssets/**/*.meta
+# Never ignore Asset obj data
+![Aa]ssets/**/*.obj
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
@@ -150,7 +154,6 @@ StyleCopReport.xml
 *_p.c
 *_h.h
 *.ilk
-*.obj
 *.iobj
 *.pch
 *.ipdb
