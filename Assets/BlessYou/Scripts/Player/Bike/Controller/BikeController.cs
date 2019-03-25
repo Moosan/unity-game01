@@ -108,11 +108,15 @@ namespace Bike
             //現在角を取得
             var nowAngle = transform.eulerAngles.y;
 
+            var targetAngle = (int)TargetDirection;
             //目標角と現在角の差分を取得
-            var deltaAngle = (int)TargetDirection - nowAngle;
+            var deltaAngle = targetAngle - nowAngle;
 
-            //差分の大きさが0.1f未満なら回転やめる
-            if (Mathf.Abs(deltaAngle) < 0.1f) return;//この部分が脆弱性、yRotateSpeedを特殊な値にすると動かなくなる
+            //差分の大きさがこのフレームでの変化量未満なら、目的の角度にして回転やめる、このフレームから動き始める
+            if (Mathf.Abs(deltaAngle) < yRotateSpeed * Time.deltaTime) {
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, targetAngle, transform.eulerAngles.z);
+                return;
+            }
 
             //現在角に、目標角に近づく値を足す、Mathf.Sign()のとこで、右回りか左回りか指定してる
             nowAngle = nowAngle + Mathf.Sign(ChangeAngle(deltaAngle)) * Time.deltaTime * yRotateSpeed;

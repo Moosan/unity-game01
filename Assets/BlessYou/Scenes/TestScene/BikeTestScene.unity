@@ -219,10 +219,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 603c7b74ebac2e347ad355c587b43f27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSpeed: 10
-  MovePower: 80
+  MaxSpeed: 12
+  MovePower: 100
   zRotateThrethold: 15
-  yRotateSpeed: 180
+  yRotateSpeed: 400
 --- !u!54 &119434344
 Rigidbody:
   m_ObjectHideFlags: 0
